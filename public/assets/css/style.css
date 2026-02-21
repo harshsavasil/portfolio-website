@@ -489,16 +489,26 @@ main {
 }
 
 .navbar-link {
+  position: relative;
   color: var(--light-gray);
   font-size: var(--fs-8);
   padding: 20px 7px;
-  transition: color var(--transition-1);
+  transition: color 0.3s ease,
+              transform 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+              text-shadow 0.3s ease;
 }
 
 .navbar-link:hover,
-.navbar-link:focus { color: var(--light-gray-70); }
+.navbar-link:focus {
+  color: var(--orange-yellow-crayola);
+  transform: translateY(-2px);
+  text-shadow: 0 0 8px hsla(45, 100%, 72%, 0.25);
+}
 
-.navbar-link.active { color: var(--orange-yellow-crayola); }
+.navbar-link.active {
+  color: var(--orange-yellow-crayola);
+  text-shadow: 0 0 12px hsla(45, 100%, 72%, 0.3);
+}
 
 .navbar-pill {
   position: absolute;
