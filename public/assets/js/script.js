@@ -140,6 +140,18 @@ for (let i = 0; i < formInputs.length; i++) {
 const navigationLinks = document.querySelectorAll("[data-nav-link]");
 const pages = document.querySelectorAll("[data-page]");
 
+// navbar pill
+const navbarPill = document.querySelector(".navbar-pill");
+const navbarList = document.querySelector(".navbar-list");
+
+function updateNavbarPill(activeLink) {
+  if (!navbarPill || !activeLink) return;
+  const linkRect = activeLink.getBoundingClientRect();
+  const listRect = navbarList.getBoundingClientRect();
+  navbarPill.style.left = (linkRect.left - listRect.left) + "px";
+  navbarPill.style.width = linkRect.width + "px";
+}
+
 // add event to all nav link
 for (let i = 0; i < navigationLinks.length; i++) {
   navigationLinks[i].addEventListener("click", function () {
@@ -149,11 +161,45 @@ for (let i = 0; i < navigationLinks.length; i++) {
         pages[i].classList.add("active");
         navigationLinks[i].classList.add("active");
         window.scrollTo(0, 0);
+
+        pages[i].querySelectorAll("[data-reveal]").forEach(function (el) {
+          el.classList.remove("revealed");
+          revealObserver.observe(el);
+        });
       } else {
         pages[i].classList.remove("active");
         navigationLinks[i].classList.remove("active");
       }
     }
 
+    updateNavbarPill(this);
   });
 }
+
+window.addEventListener("load", function () {
+  const activeLink = document.querySelector(".navbar-link.active");
+  if (activeLink) updateNavbarPill(activeLink);
+});
+
+window.addEventListener("resize", function () {
+  const activeLink = document.querySelector(".navbar-link.active");
+  if (activeLink) updateNavbarPill(activeLink);
+});
+
+
+// scroll reveal with IntersectionObserver
+const revealObserver = new IntersectionObserver(function (entries) {
+  entries.forEach(function (entry) {
+    if (entry.isIntersecting) {
+      entry.target.classList.add("revealed");
+      revealObserver.unobserve(entry.target);
+    }
+  });
+}, {
+  threshold: 0.15,
+  rootMargin: "0px 0px -40px 0px"
+});
+
+document.querySelectorAll("[data-reveal]").forEach(function (el) {
+  revealObserver.observe(el);
+});
